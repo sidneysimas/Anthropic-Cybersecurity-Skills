@@ -53,7 +53,7 @@ _SUBDOMAIN_ALIASES = {
     "blockchain-security": {"blockchain-security"},
     "data-protection": {"data-protection"},
     "deception-technology": {"deception-technology"},
-    "firmware-analysis": {"firmware-analysis", "firmware-security"},
+    "hardware-firmware-security": {"hardware-firmware-security", "firmware-analysis", "firmware-security"},
     "privacy-compliance": {"privacy-compliance"},
     "purple-team": {"purple-team"},
     "supply-chain-security": {"supply-chain-security"},
@@ -263,7 +263,12 @@ def main():
         sys.exit(1)
 
     if sys.argv[1] == "--all":
-        skill_dirs = sorted(glob.glob("skills/*/"))
+        # Skip .bak backup directories — they are stale copies without a SKILL.md.
+        # glob may return OS-native separators, so normalize before checking.
+        skill_dirs = sorted(
+            d for d in glob.glob("skills/*/")
+            if not d.rstrip("/\\").endswith(".bak")
+        )
         if not skill_dirs:
             print("ERROR: No skill directories found. Run from the repository root.")
             sys.exit(1)
